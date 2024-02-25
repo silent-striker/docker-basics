@@ -1,0 +1,28 @@
+networks:
+  docker-common-network:
+    driver: bridge
+
+services:
+  input-validator:
+    image: "priyatamsomagattu/input_validator"
+    ports:
+      - "6000:6000"
+    depends_on:
+      - read-and-compute
+    environment:
+      SECOND_SERVICE_HOSTNAME: read-and-compute
+      SECOND_SERVICE_PORT: 10000
+      PORT: 6000
+    networks:
+      - docker-common-network
+  
+  read-and-compute:
+    image: "priyatamsomagattu/read_and_compute"
+    ports:
+      - "10000:10000"
+    environment:
+      PORT: 10000
+    volumes:
+      - .:/data
+    networks:
+      - docker-common-network
